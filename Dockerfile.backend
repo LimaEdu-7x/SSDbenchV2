@@ -11,10 +11,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app/backend
 
-COPY backend/requirements.txt /app/backend/requirements.txt
+# Usa requirements-docker.txt (enxuto, só o necessário para o SSDBench)
+COPY backend/requirements-docker.txt /app/backend/requirements.txt
 RUN pip install --upgrade pip && pip install -r /app/backend/requirements.txt
 
 COPY backend /app/backend
+
+# Cria diretório padrão para o arquivo de teste
+RUN mkdir -p /data && chmod 777 /data
 
 EXPOSE 8001
 
