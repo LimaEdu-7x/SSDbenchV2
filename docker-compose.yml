@@ -1,0 +1,58 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: ssdbench-mongo
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - ssdbench
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: ssdbench-backend
+    restart: unless-stopped
+    # Privileged + /dev mount required to read physical block devices via fio.
+    # Remove these two lines if you only want to benchmark a file inside /data.
+    privileged: true
+    devices:
+      - "/dev:/dev"
+    environment:
+      MONGO_URL: "mongodb://mongo:27017"
+      DB_NAME: "ssdbench"
+      CORS_ORIGINS: "*"
+    depends_on:
+      - mongo
+    volumes:
+      - bench_data:/data
+      # Expose host block device nodes (read-only)
+      # - /dev:/dev
+    networks:
+      - ssdbench
+    ports:
+      - "8001:8001"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        REACT_APP_BACKEND_URL: ""
+    container_name: ssdbench-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - ssdbench
+    ports:
+      - "8080:80"
+
+networks:
+  ssdbench:
+    driver: bridge
+
+volumes:
+  mongo_data:
+  bench_data:
