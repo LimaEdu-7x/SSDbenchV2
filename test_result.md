@@ -278,6 +278,11 @@ agent_communication:
       'log', 'progress', 'stage_start', 'stage_result', 'done'.
   - agent: "testing"
     message: |
+      ✅ TODOS os 11 testes do backend passaram. REST + WebSocket funcionando perfeitamente.
+      Execução real de fio confirmada (job fast 2 stages ~2.5s). MongoDB persistindo corretamente.
+      Cancelamento de job OK. Nenhuma correção necessária.
+  - agent: "testing"
+    message: |
       ✅ COMPREHENSIVE BACKEND TESTING COMPLETED - ALL ENDPOINTS WORKING PERFECTLY!
       
       Tested all 11 endpoints as specified in review request:
