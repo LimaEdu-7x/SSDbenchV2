@@ -1,10 +1,16 @@
 # SSDBench Frontend - Dockerfile (production build served via nginx)
 FROM node:20-alpine AS build
 WORKDIR /app
-COPY frontend/package.json frontend/yarn.lock /app/
-RUN yarn install --frozen-lockfile
+
+# Copia package.json (obrigatório). yarn.lock é opcional — o wildcard evita erro se faltar.
+COPY frontend/package.json /app/package.json
+COPY frontend/yarn.loc[k] /app/
+
+RUN yarn install --network-timeout 600000
+
 COPY frontend /app
-ARG REACT_APP_BACKEND_URL=http://localhost:8001
+
+ARG REACT_APP_BACKEND_URL=
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
 RUN yarn build
 
